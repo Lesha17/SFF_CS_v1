@@ -39,6 +39,7 @@ namespace Same_Files_Finder_CS_v1
             w = new Worker(dir);
             w.update += w_update;
             w.finished += w_finished;
+            button1.Visible = false;
             w.start();
         }
 
@@ -49,6 +50,7 @@ namespace Same_Files_Finder_CS_v1
                     this.d = d;
                     update_list_box();
                     info_label.Text = "Поиск завершён";
+                    button1.Visible = true;
                 }));
         }
 
@@ -82,6 +84,12 @@ namespace Same_Files_Finder_CS_v1
             }
 
             listBox2.EndUpdate();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            select_Dir_by_Dialog();
+            info_label.Text = "Поиск будет проходить в " + dir;
         }
     }
 }
