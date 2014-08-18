@@ -24,7 +24,6 @@ namespace Same_Files_Finder_CS_v1
             dir = "/";
             select_Dir_by_Dialog();
             info_label.Text = "Поиск будет проходить в " + dir;
-            w = new Worker(dir);
         }
 
         void select_Dir_by_Dialog()
@@ -37,6 +36,7 @@ namespace Same_Files_Finder_CS_v1
 
         private void button1_Click(object sender, EventArgs e)
         {
+            w = new Worker(dir);
             w.update += w_update;
             w.finished += w_finished;
             w.start();
@@ -48,6 +48,7 @@ namespace Same_Files_Finder_CS_v1
                 {
                     this.d = d;
                     update_list_box();
+                    info_label.Text = "Поиск завершён";
                 }));
         }
 

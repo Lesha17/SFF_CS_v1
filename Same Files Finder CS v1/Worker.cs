@@ -36,21 +36,26 @@ namespace Same_Files_Finder_CS_v1
         private void work()
         {
             in_dir(new DirectoryInfo(dir));
-            files.Sort(compare_by_name);
-
-            for (int i = 0; i < files.Count - 1; ++i)
+            files.Sort(compare);
+            string s = "";
+            Int64 size = 0;
+            List<string> l = new List<string>();
+            foreach (FileInfo f in files)
             {
-                string s = files[i].Name;
-                List<string> l = new List<string>();
-                while (i < files.Count && s == files[i].Name)
+                if (size == f.Length && s == f.Name)
                 {
-                    l.Add(files[i++].FullName);
+                    l.Add(f.FullName);
+                    continue;
                 }
-                i--;
-                if (l.Count > 1)
+                    
+                if(l.Count > 1)
                 {
-                    ans.Add(s, l);
+                    ans.Add(s + ":" + size, l);
                 }
+                l = new List<string>();
+                l.Add(f.FullName);
+                size = f.Length;
+                s = f.Name;
             }
             finished(ans);
         }
@@ -71,6 +76,19 @@ namespace Same_Files_Finder_CS_v1
         int compare_by_name(FileInfo f1, FileInfo f2)
         {
             return f1.Name.CompareTo(f2.Name);
+        }
+
+        int compare_by_size(FileInfo f1, FileInfo f2)
+        {
+            return (int)(f1.Length - f2.Length);
+        }
+
+        int compare(FileInfo f1, FileInfo f2)
+        {
+            int rv = compare_by_size(f1, f2);
+            if (rv != 0)
+                return rv;
+            return compare_by_name(f1, f2);
         }
     }
 }
