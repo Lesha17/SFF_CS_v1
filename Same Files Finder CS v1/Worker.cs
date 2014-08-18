@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 using System.IO;
 
 namespace Same_Files_Finder_CS_v1
@@ -17,6 +18,7 @@ namespace Same_Files_Finder_CS_v1
         Thread rt;
         List<FileInfo> files;
         Dictionary<string, List<string>> ans;
+        Dictionary<string, string> hashes;
         public event Update update;
         public event Finished finished;
 
@@ -25,6 +27,7 @@ namespace Same_Files_Finder_CS_v1
             this.dir = dir;
             files = new List<FileInfo>();
             ans = new Dictionary<string, List<string>>();
+            hashes = new Dictionary<string, string>();
             rt = new Thread(work);
         }
 
@@ -36,6 +39,7 @@ namespace Same_Files_Finder_CS_v1
         private void work()
         {
             in_dir(new DirectoryInfo(dir));
+            update("Сортировка..");
             files.Sort(compare);
             string s = "";
             Int64 size = 0;
@@ -85,10 +89,49 @@ namespace Same_Files_Finder_CS_v1
 
         int compare(FileInfo f1, FileInfo f2)
         {
-            int rv = compare_by_size(f1, f2);
-            if (rv != 0)
-                return rv;
-            return compare_by_name(f1, f2);
+            int bs = compare_by_size(f1, f2);
+            if (bs != 0)
+                return bs;
+            int bn = compare_by_name(f1, f2);
+            if (bn != 0)
+                return bn;
+            string h1, h2;
+            if(!hashes.ContainsKey(f1.FullName))
+            {
+                using(var md5 = MD5.Create())
+                {
+                    using(var stream = File.OpenRead(f1.FullName))
+                    {
+                        update("Считаю md5 " + f1.FullName);
+                        byte[] data = md5.ComputeHash(stream);
+                        h1 = BitConverter.ToString(data);
+                        hashes.Add(f1.FullName, h1);
+                    }
+                }
+            }
+            else
+            {
+                h1 = hashes[f1.FullName];
+            }
+            if(!hashes.ContainsKey(f2.FullName))
+            {
+                using(var md5 = MD5.Create())
+                {
+                    using(var stream = File.OpenRead(f2.FullName))
+                    {
+                        update("Считаю md5 " + f2.FullName);
+                        byte[] data = md5.ComputeHash(stream);
+                        h2 = BitConverter.ToString(data);
+                        hashes.Add(f2.FullName, h2);
+                    }
+                }
+            }
+            else
+            {
+                h2 = hashes[f2.FullName];
+            }
+
+            return h1.CompareTo(h2);
         }
     }
 }
