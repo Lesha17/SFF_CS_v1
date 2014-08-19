@@ -16,6 +16,8 @@ namespace Same_Files_Finder_CS_v1
     public partial class Form1 : Form
     {
         private string dir;
+        private Select_mask_form smf;
+        private string masks;
         Worker w;
         Dictionary<string, List<string>> d;
 
@@ -23,8 +25,10 @@ namespace Same_Files_Finder_CS_v1
         {
             InitializeComponent();
             dir = "/";
+            masks = string.Empty;
             select_Dir_by_Dialog();
-            info_label.Text = "Поиск будет проходить в " + dir;
+            select_Masks_by_Dialog();
+            info_label.Text = "Поиск будет проходить в " + dir + " по маскам " + masks;
         }
 
         void select_Dir_by_Dialog()
@@ -35,12 +39,21 @@ namespace Same_Files_Finder_CS_v1
             }
         }
 
+        void select_Masks_by_Dialog()
+        {
+            if(smf.ShowDialog() == DialogResult.OK)
+            {
+                masks = smf.Selected_mask;
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            w = new Worker(dir);
+            w = new Worker(dir, masks);
             w.update += w_update;
             w.finished += w_finished;
             button1.Visible = false;
+            info_label.Text = string.Empty;
             w.start();
         }
 
@@ -50,14 +63,14 @@ namespace Same_Files_Finder_CS_v1
                 {
                     this.d = d;
                     update_list_box();
-                    info_label.Text = "Поиск завершён";
+                    status_label.Text = "Поиск завершён";
                     button1.Visible = true;
                 }));
         }
 
         void w_update(string current)
         {
-            BeginInvoke(new ThreadStart(delegate { info_label.Text = current; }));
+            BeginInvoke(new ThreadStart(delegate { status_label.Text = current; }));
         }
 
         void update_list_box()
@@ -92,7 +105,8 @@ namespace Same_Files_Finder_CS_v1
         private void button2_Click(object sender, EventArgs e)
         {
             select_Dir_by_Dialog();
-            info_label.Text = "Поиск будет проходить в " + dir;
+            select_Masks_by_Dialog();
+            info_label.Text = "Поиск будет проходить в " + dir + " по маскам " + masks;
         }
 
         private void openInExplorer()

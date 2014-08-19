@@ -14,15 +14,18 @@ namespace Same_Files_Finder_CS_v1
         public delegate void Finished(Dictionary<string, List<string>> d);
 
         string dir;
+        string masks;
+        char[] sep = {' '};
         Thread rt;
         List<FileInfo> files;
         Dictionary<string, List<string>> ans;
         public event Update update;
         public event Finished finished;
 
-        public Worker(String dir)
+        public Worker(String dir, string masks)
         {
             this.dir = dir;
+            this.masks = masks;
             files = new List<FileInfo>();
             ans = new Dictionary<string, List<string>>();
             rt = new Thread(work);
@@ -71,10 +74,15 @@ namespace Same_Files_Finder_CS_v1
             try
             {
                 update(d.FullName);
-                foreach (FileInfo f in d.GetFiles())
+                foreach(String m in masks.Split(sep))
                 {
-                    files.Add(f);
+                    foreach (FileInfo f in d.GetFiles(m))
+                    {
+                        if(m.EndsWith(f.Extension))
+                            files.Add(f);
+                    }
                 }
+                Console.WriteLine();
                 foreach (DirectoryInfo di in d.GetDirectories())
                 {
                     if (di != d.Parent)
