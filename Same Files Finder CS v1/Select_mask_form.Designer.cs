@@ -179,6 +179,7 @@
             this.Controls.Add(this.masks_tb);
             this.Name = "Select_mask_form";
             this.Text = "Выбор типа файлов";
+            this.Icon = global::Same_Files_Finder_CS_v1.Properties.Resources.favicon;
             this.tableLayoutPanel1.ResumeLayout(false);
             this.videos_gb.ResumeLayout(false);
             this.documents_gb.ResumeLayout(false);

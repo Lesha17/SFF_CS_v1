@@ -132,6 +132,7 @@
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "Form1";
             this.Text = "Поиск одинаковых файлов";
+            this.Icon = global::Same_Files_Finder_CS_v1.Properties.Resources.favicon;
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
