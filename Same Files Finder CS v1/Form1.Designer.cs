@@ -86,6 +86,8 @@
             this.listBox2.Name = "listBox2";
             this.listBox2.Size = new System.Drawing.Size(600, 225);
             this.listBox2.TabIndex = 5;
+            this.listBox2.DoubleClick += new System.EventHandler(this.listBox2_DoubleClick);
+            this.listBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.listBox2_KeyPress);
             // 
             // button2
             // 

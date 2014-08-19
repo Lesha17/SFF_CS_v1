@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Windows;
+using System.Diagnostics;
 
 namespace Same_Files_Finder_CS_v1
 {
@@ -70,6 +71,8 @@ namespace Same_Files_Finder_CS_v1
             }
 
             listBox1.EndUpdate();
+
+            listBox2.Items.Clear();
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -90,6 +93,36 @@ namespace Same_Files_Finder_CS_v1
         {
             select_Dir_by_Dialog();
             info_label.Text = "Поиск будет проходить в " + dir;
+        }
+
+        private void openInExplorer()
+        {
+            Process prFolder = new Process();
+            ProcessStartInfo psi = new ProcessStartInfo();
+            string file = (string)listBox2.SelectedItem;
+            psi.CreateNoWindow = true;
+            psi.WindowStyle = ProcessWindowStyle.Normal;
+            psi.FileName = "explorer";
+            psi.Arguments = @"/n, /select, " + file;
+            prFolder.StartInfo = psi;
+            prFolder.Start();
+        }
+
+        private void listBox2_DoubleClick(object sender, EventArgs e)
+        {
+            openInExplorer();
+        }
+
+        private void listBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            switch (e.KeyChar) 
+            {
+                case((char)Keys.Enter):
+                    openInExplorer();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
