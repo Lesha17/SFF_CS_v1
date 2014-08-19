@@ -53,23 +53,37 @@ namespace Same_Files_Finder_CS_v1
                     ans.Add(s + ":" + size, l);
                 }
                 l = new List<string>();
-                l.Add(f.FullName);
-                size = f.Length;
-                s = f.Name;
+                try
+                {
+                    l.Add(f.FullName);
+                    size = f.Length;
+                    s = f.Name;
+                }
+                catch(Exception e)
+                {
+                    update("Ошибка: " + e.Message);
+                }
             }
             finished(ans);
         }
         void in_dir(DirectoryInfo d)
         {
-            update(d.FullName);
-            foreach(FileInfo f in d.GetFiles())
+            try
             {
-                files.Add(f);
+                update(d.FullName);
+                foreach (FileInfo f in d.GetFiles())
+                {
+                    files.Add(f);
+                }
+                foreach (DirectoryInfo di in d.GetDirectories())
+                {
+                    if (di != d.Parent)
+                        in_dir(di);
+                }
             }
-            foreach(DirectoryInfo di in d.GetDirectories())
+            catch(UnauthorizedAccessException)
             {
-                if(di != d.Parent)
-                    in_dir(di);
+                return;
             }
         }
 
